@@ -10,6 +10,17 @@
       --bg: #0a0a0f; --surface: #12121a; --border: #1e1e2e;
       --accent: #6c63ff; --accent-2: #a78bfa; --text: #e8e8f0; --muted: #8888a8; --radius: 12px;
     }
+    [data-theme="light"] {
+      --bg: #f5f5fa; --surface: #ffffff; --border: #e0e0ec;
+      --accent: #6c63ff; --accent-2: #7c3aed; --text: #0a0a1a; --muted: #6b7280;
+    }
+    .theme-toggle {
+      width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 17px;
+      transition: border-color 0.2s, color 0.2s; flex-shrink: 0;
+    }
+    .theme-toggle:hover { border-color: var(--accent); color: var(--accent-2); }
     body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
     nav {
@@ -126,7 +137,10 @@
     <li><a href="case-studies.html">Case Studies</a></li>
     <li><a href="testimonials.html" class="active">Customers</a></li>
   </ul>
-  <a href="index.html#contact" class="nav-cta">Get started</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">🌙</button>
+    <a href="index.html#contact" class="nav-cta">Get started</a>
+  </div>
 </nav>
 
 <section class="page-hero">
@@ -235,5 +249,17 @@
   <p>&copy; 2026 AI Agency.</p>
 </footer>
 
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  toggle.textContent = saved === 'light' ? '🌙' : '☀️';
+  toggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    toggle.textContent = next === 'light' ? '🌙' : '☀️';
+  });
+</script>
 </body>
 </html>
