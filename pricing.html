@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — AI Agency</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0f; --surface: #12121a; --border: #1e1e2e;
+      --accent: #6c63ff; --accent-2: #a78bfa; --text: #e8e8f0; --muted: #8888a8; --radius: 12px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-size: 20px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--accent-2); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-cta { background: var(--accent); color: #fff; padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
+
+    .page-hero {
+      padding: 160px 24px 80px;
+      text-align: center;
+    }
+    .page-hero .label { font-size: 13px; font-weight: 600; color: var(--accent-2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+    .page-hero h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; letter-spacing: -2px; margin-bottom: 16px; }
+    .page-hero p { font-size: 18px; color: var(--muted); max-width: 500px; margin: 0 auto; }
+
+    .toggle-wrap {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin: 40px 0;
+      font-size: 14px; color: var(--muted);
+    }
+    .toggle {
+      width: 48px; height: 26px; border-radius: 100px;
+      background: var(--accent); border: none; cursor: pointer; position: relative; transition: background 0.2s;
+    }
+    .toggle::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; border-radius: 50%; background: #fff;
+      transition: transform 0.2s;
+    }
+    .toggle.annual::after { transform: translateX(22px); }
+    .save-badge {
+      background: rgba(108,99,255,0.15); color: var(--accent-2);
+      border: 1px solid rgba(108,99,255,0.3);
+      border-radius: 100px; padding: 2px 10px; font-size: 12px; font-weight: 600;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+
+    .plan-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      position: relative;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .plan-card:hover { transform: translateY(-4px); }
+    .plan-card.popular {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(108,99,255,0.06), var(--surface));
+    }
+
+    .popular-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #fff;
+      font-size: 12px; font-weight: 700; padding: 4px 16px; border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .plan-name { font-size: 16px; font-weight: 600; color: var(--muted); margin-bottom: 12px; }
+    .plan-price {
+      font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1;
+      margin-bottom: 6px;
+    }
+    .plan-price span { font-size: 20px; font-weight: 500; color: var(--muted); vertical-align: top; padding-top: 8px; display: inline-block; }
+    .plan-period { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .plan-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+    .plan-features { list-style: none; margin-bottom: 32px; }
+    .plan-features li {
+      font-size: 14px; padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .plan-features li:last-child { border-bottom: none; }
+    .plan-features li::before { content: '✓'; color: var(--accent-2); font-weight: 700; flex-shrink: 0; }
+    .plan-features li.no::before { content: '✕'; color: var(--muted); }
+    .plan-features li.no { color: var(--muted); }
+
+    .plan-btn {
+      display: block; width: 100%; text-align: center;
+      padding: 14px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .plan-btn.primary { background: var(--accent); color: #fff; }
+    .plan-btn.primary:hover { opacity: 0.9; }
+    .plan-btn.outline { border: 1px solid var(--border); color: var(--text); }
+    .plan-btn.outline:hover { border-color: var(--accent); color: var(--accent-2); }
+
+    .faq-section {
+      max-width: 720px; margin: 0 auto; padding: 0 24px 100px;
+    }
+    .faq-section h2 { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 40px; text-align: center; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; cursor: pointer; }
+    .faq-item summary { font-size: 16px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .faq-item summary::after { content: '+'; font-size: 20px; color: var(--accent-2); }
+    .faq-item[open] summary::after { content: '−'; }
+    .faq-item p { font-size: 14px; color: var(--muted); margin-top: 12px; line-height: 1.8; }
+
+    footer { border-top: 1px solid var(--border); padding: 40px 60px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    footer .logo { font-weight: 700; font-size: 16px; }
+    footer .logo span { color: var(--accent-2); }
+    footer p { font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 768px) { nav { padding: 16px 24px; } .nav-links { display: none; } footer { padding: 32px 24px; flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">AI<span>Agency</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="pricing.html" class="active">Pricing</a></li>
+    <li><a href="case-studies.html">Case Studies</a></li>
+    <li><a href="testimonials.html">Customers</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Get started</a>
+</nav>
+
+<section class="page-hero">
+  <div class="label">Pricing</div>
+  <h1>Simple, transparent pricing</h1>
+  <p>No hidden fees. Pick the plan that fits your business.</p>
+  <div class="toggle-wrap">
+    Monthly
+    <button class="toggle" id="toggle" onclick="this.classList.toggle('annual'); togglePrices()"></button>
+    Annual <span class="save-badge">Save 20%</span>
+  </div>
+</section>
+
+<div class="pricing-grid">
+  <div class="plan-card">
+    <div class="plan-name">Starter</div>
+    <div class="plan-price"><span>€</span><span class="price" data-monthly="990" data-annual="792">990</span></div>
+    <div class="plan-period">per month</div>
+    <div class="plan-desc">Perfect for businesses that want to test AI automation with a single use case.</div>
+    <ul class="plan-features">
+      <li>1 AI agent (voice or chat)</li>
+      <li>Up to 500 conversations/mo</li>
+      <li>1 integration (CRM or calendar)</li>
+      <li>Email support</li>
+      <li class="no">Custom branding</li>
+      <li class="no">Dedicated success manager</li>
+    </ul>
+    <a href="index.html#contact" class="plan-btn outline">Get started</a>
+  </div>
+
+  <div class="plan-card popular">
+    <div class="popular-badge">Most popular</div>
+    <div class="plan-name">Growth</div>
+    <div class="plan-price"><span>€</span><span class="price" data-monthly="2490" data-annual="1992">2,490</span></div>
+    <div class="plan-period">per month</div>
+    <div class="plan-desc">For teams ready to scale automation across sales, support, and operations.</div>
+    <ul class="plan-features">
+      <li>3 AI agents</li>
+      <li>Up to 3,000 conversations/mo</li>
+      <li>Unlimited integrations</li>
+      <li>Priority support</li>
+      <li>Custom branding</li>
+      <li class="no">Dedicated success manager</li>
+    </ul>
+    <a href="index.html#contact" class="plan-btn primary">Get started</a>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-name">Enterprise</div>
+    <div class="plan-price" style="font-size:36px; padding-top:8px; padding-bottom:14px;">Custom</div>
+    <div class="plan-period">tailored to your volume</div>
+    <div class="plan-desc">For large organizations with complex workflows, compliance requirements, or on-premise needs.</div>
+    <ul class="plan-features">
+      <li>Unlimited agents</li>
+      <li>Unlimited conversations</li>
+      <li>Custom SLA & uptime guarantee</li>
+      <li>Dedicated success manager</li>
+      <li>On-premise deployment option</li>
+      <li>GDPR & compliance package</li>
+    </ul>
+    <a href="index.html#contact" class="plan-btn outline">Talk to sales</a>
+  </div>
+</div>
+
+<section class="faq-section">
+  <h2>Frequently asked questions</h2>
+  <details class="faq-item">
+    <summary>What counts as a "conversation"?</summary>
+    <p>One conversation is a complete interaction — e.g. a full phone call, or a chat session from first message to resolution. We count unique sessions, not individual messages.</p>
+  </details>
+  <details class="faq-item">
+    <summary>How long does setup take?</summary>
+    <p>Most clients are live within 10–14 business days. Complex enterprise integrations may take up to 4 weeks depending on your tech stack.</p>
+  </details>
+  <details class="faq-item">
+    <summary>Can I switch plans later?</summary>
+    <p>Yes, you can upgrade or downgrade at any time. Changes take effect at the start of your next billing cycle.</p>
+  </details>
+  <details class="faq-item">
+    <summary>Is there a free trial?</summary>
+    <p>We offer a free 30-minute strategy call and a pilot scoping session. Paid pilots can be arranged for Enterprise clients.</p>
+  </details>
+  <details class="faq-item">
+    <summary>Do you offer GDPR-compliant solutions?</summary>
+    <p>Yes. All data is processed within the EU. We sign a DPA (Data Processing Agreement) with every client. On-premise deployment is available on Enterprise plans.</p>
+  </details>
+</section>
+
+<footer>
+  <div class="logo">AI<span>Agency</span></div>
+  <p>&copy; 2026 AI Agency.</p>
+</footer>
+
+<script>
+  function togglePrices() {
+    const isAnnual = document.getElementById('toggle').classList.contains('annual');
+    document.querySelectorAll('.price').forEach(el => {
+      const val = isAnnual ? el.dataset.annual : el.dataset.monthly;
+      el.textContent = Number(val).toLocaleString('de-DE');
+    });
+  }
+</script>
+</body>
+</html>
